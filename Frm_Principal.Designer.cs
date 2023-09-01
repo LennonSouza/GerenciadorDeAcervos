@@ -315,17 +315,17 @@
         private Panel panel_InformacoesInstituicao;
         private Label lbl_ExibicaoPermissaoFix;
         private Label lbl_ExibicaoUsuarioFix;
-        private GroupBox gb_InformacoesIntituicao;
-        private Panel panel_Central;
         public Label lbl_ExibicaoUsuario;
         public Label lbl_ExibicaoPermissao;
         public PictureBox pictureBox_Usuario;
-        private GroupBox gb_PrincipalLogin;
         private TextBox txtSenha;
         private TextBox txtNomeUsuario;
         private Label lbl_Password;
         private Label lbl_Login;
         private Button btn_Login;
-        private Label lbl_ErrorLoginMsg;
+        public Label lbl_ErrorLoginMsg;
+        public GroupBox gb_InformacoesIntituicao;
+        private GroupBox gb_PrincipalLogin;
+        public Panel panel_Central;
     }
 }

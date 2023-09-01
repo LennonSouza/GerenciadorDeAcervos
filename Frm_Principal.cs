@@ -1,9 +1,8 @@
 using GerenciadorDeAcervos.Data;
 using GerenciadorDeAcervos.Forms;
+using GerenciadorDeAcervos.Funcoes;
 using GerenciadorDeAcervos.Personalizacao;
-using Microsoft.EntityFrameworkCore;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 
 namespace GerenciadorDeAcervos
 {
@@ -23,11 +22,13 @@ namespace GerenciadorDeAcervos
             this.ControlBox = false;
             this.DoubleBuffered = true;
 
+            lbl_ErrorLoginMsg.Visible = false;
+
             Personalisar.CenterLabelInPanel(panel_BarraTitulo, lbl_BarraTitulo);
             Personalisar.CenterGroupBoxInPanel(panel_InformacoesInstituicao, gb_InformacoesIntituicao);
         }
 
-        #region Trio Botões
+        #region Botões Minimizar/Maximizar/Fechar
         private void btn_FecharAplicacao_Click(object sender, EventArgs e)
         {
             Environment.Exit(0);
@@ -43,33 +44,9 @@ namespace GerenciadorDeAcervos
         {
             this.WindowState = FormWindowState.Minimized;
         }
-
-        private void panel_BarraTitulo_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            if (WindowState == FormWindowState.Maximized)
-            {
-                WindowState = FormWindowState.Normal;
-            }
-            else
-            {
-                WindowState = FormWindowState.Maximized;
-            }
-        }
-
-        private void lbl_BarraTitulo_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            if (WindowState == FormWindowState.Maximized)
-            {
-                WindowState = FormWindowState.Normal;
-            }
-            else
-            {
-                WindowState = FormWindowState.Maximized;
-            }
-        }
         #endregion
 
-        #region BarraTitulo
+        #region Manuseio do form
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
         private extern static void ReleaseCapture();
 
@@ -104,76 +81,58 @@ namespace GerenciadorDeAcervos
         {
             Personalisar.CenterLabelInPanel(panel_BarraTitulo, lbl_BarraTitulo);
         }
-        #endregion
+
+        private void panel_BarraTitulo_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (WindowState == FormWindowState.Maximized)
+            {
+                WindowState = FormWindowState.Normal;
+            }
+            else
+            {
+                WindowState = FormWindowState.Maximized;
+            }
+        }
+
+        private void lbl_BarraTitulo_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (WindowState == FormWindowState.Maximized)
+            {
+                WindowState = FormWindowState.Normal;
+            }
+            else
+            {
+                WindowState = FormWindowState.Maximized;
+            }
+        }
 
         private void panel_InformacoesInstituicao_Resize(object sender, EventArgs e)
         {
             Personalisar.CenterGroupBoxInPanel(panel_InformacoesInstituicao, gb_InformacoesIntituicao);
         }
 
-        private void btn_CadastroInstituicao_Click(object sender, EventArgs e)
-        {
-            ShowNewForm(new Frm_CadastroUsuario());
-        }
-
-        private void ShowNewForm(object form)
-        {
-            if (this.panel_Central.Controls.Count > 0) this.panel_Central.Controls.RemoveAt(0);
-
-            Form newForm = form as Form;
-            newForm.TopLevel = false;
-            newForm.Dock = DockStyle.Fill;
-            this.panel_Central.Controls.Add(newForm);
-            this.panel_Central.Tag = newForm;
-            newForm.Show();
-        }
-
         private void panel_Central_Resize(object sender, EventArgs e)
         {
             Personalisar.CenterGroupBoxInPanel(panel_Central, gb_PrincipalLogin);
         }
+        #endregion
+
+        private void btn_CadastroInstituicao_Click(object sender, EventArgs e)
+        {
+            GlobalConfiguration.ShowNewForm(new Frm_CadastroUsuario(), panel_Central);
+        }
 
         private void btn_Login_Click(object sender, EventArgs e)
         {
-            lbl_ErrorLoginMsg.Visible = false;
+            btn_Login.Enabled = false;
+
             string nomeUsuario = txtNomeUsuario.Text.ToLower();
-            if (!string.IsNullOrWhiteSpace(nomeUsuario))
-            {
-                string senha = txtSenha.Text;
-                if (!string.IsNullOrWhiteSpace(senha))
-                {
-                    bool connection = CheckConnection.Connection();
-                    if (connection)
-                    {
-                        using (AcervoDbContext context = new())
-                        {
-                            // Consulta o banco de dados para verificar se o usuário e senha correspondem.
-                            var user = context.Usuarios.FirstOrDefault(u => u.UsuarioNome == nomeUsuario && u.Senha == senha);
-                            if (user != null)
-                            {
-                                gb_InformacoesIntituicao.Visible = true;
+            string senha = txtSenha.Text;
 
-                                Permissao permissao = (Permissao)user.NivelPermissao;
+            GlobalConfiguration verificationCredentials = new GlobalConfiguration(nomeUsuario, senha);
+            verificationCredentials.Logged();
 
-                                lbl_ExibicaoUsuario.Text = user.UsuarioNome;
-                                lbl_ExibicaoPermissao.Text = permissao.ToString();
-                                pictureBox_Usuario.Image = ConverterParaImagem(user.Imagem);
-
-                                if (user.NivelPermissao == 0) ShowNewForm(new Frm_Opcoes());
-                                else if (user.NivelPermissao == 1)
-                                {
-
-                                }
-                                else
-                                {
-
-                                }
-                            }
-                            else lbl_ErrorLoginMsg.Visible = true;
-                        }
-                    }
-                }
-            }
+            btn_Login.Enabled = true;
         }
 
         public enum Permissao

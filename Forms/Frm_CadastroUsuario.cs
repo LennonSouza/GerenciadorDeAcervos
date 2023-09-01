@@ -1,6 +1,7 @@
 ﻿using GerenciadorDeAcervos.Data;
 using GerenciadorDeAcervos.Data.Functions.UsuarioData;
 using GerenciadorDeAcervos.Data.Models;
+using GerenciadorDeAcervos.Funcoes;
 using GerenciadorDeAcervos.Personalizacao;
 using static GerenciadorDeAcervos.Frm_Principal;
 
@@ -71,59 +72,63 @@ namespace GerenciadorDeAcervos.Forms
             if (string.IsNullOrWhiteSpace(filePath))
             {
                 MessageBox.Show("A imagem é obrigatoria.", "Adicionar imagem", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                ShowNewForm(new Frm_CadastroUsuario());
+                GlobalConfiguration.ShowNewForm(new Frm_CadastroUsuario(), panel_Cadastro);
                 return;
             }
             else imagem = GetImagem(filePath);
 
-            Usuario? user = _context.Usuarios.FirstOrDefault(u => u.UsuarioNome == txt_CadastroUsuario.Text);
-            if (user != null)
+            if (!string.IsNullOrWhiteSpace(txt_CadastroUsuario.Text) && !string.IsNullOrWhiteSpace(txt_CadastroSenha.Text))
             {
-                if (user.NivelPermissao != cmb_CadastroPermissao.SelectedIndex)
+                Usuario? user = _context.Usuarios.FirstOrDefault(u => u.UsuarioNome == txt_CadastroUsuario.Text);
+                if (user != null)
                 {
-                    MessageBox.Show($"Você não pode alterar seu nivel de permissão.");
+                    if (user.NivelPermissao != cmb_CadastroPermissao.SelectedIndex)
+                    {
+                        MessageBox.Show($"Você não pode alterar seu nivel de permissão.");
+                    }
+                    else
+                    {
+                        if (guid == user.UsuarioId)
+                        {
+                            _principal.Invoke((MethodInvoker)delegate
+                            {
+                                if (!string.IsNullOrEmpty(txt_CadastroUsuario.Text) &&
+                                !string.IsNullOrEmpty(txt_CadastroSenha.Text) &&
+                                !string.IsNullOrEmpty(cmb_CadastroPermissao.Text) &&
+                                pictureBox_Cadastro.Image != null)
+                                {
+                                    _principal.lbl_ExibicaoUsuario.Text = txt_CadastroUsuario.Text;
+                                    _principal.lbl_ExibicaoPermissao.Text = cmb_CadastroPermissao.SelectedItem.ToString();
+                                    _principal.pictureBox_Usuario.Image = pictureBox_Cadastro.Image;
+                                }
+                            });
+                        }
+
+                        user.UsuarioNome = txt_CadastroUsuario.Text;
+                        user.Senha = txt_CadastroSenha.Text;
+                        user.Imagem = imagem;
+                        user.NivelPermissao = cmb_CadastroPermissao.SelectedIndex;
+
+                        UserData userData = new UserData(user, _context);
+                        userData.UpdateUser();
+                    }
                 }
                 else
                 {
-                    if (guid == user.UsuarioId)
+                    Usuario usuario = new Usuario
                     {
-                        Frm_Principal._principal.Invoke((MethodInvoker)delegate
-                        {
-                            if (!string.IsNullOrEmpty(txt_CadastroUsuario.Text) &&
-                            !string.IsNullOrEmpty(txt_CadastroSenha.Text) &&
-                            !string.IsNullOrEmpty(cmb_CadastroPermissao.Text) &&
-                            pictureBox_Cadastro.Image != null)
-                            {
-                                Frm_Principal._principal.lbl_ExibicaoUsuario.Text = txt_CadastroUsuario.Text;
-                                Frm_Principal._principal.lbl_ExibicaoPermissao.Text = cmb_CadastroPermissao.SelectedItem.ToString();
-                                Frm_Principal._principal.pictureBox_Usuario.Image = pictureBox_Cadastro.Image;
-                            }
-                        });
-                    }
+                        UsuarioNome = txt_CadastroUsuario.Text,
+                        Senha = txt_CadastroSenha.Text,
+                        Imagem = imagem,
+                        NivelPermissao = cmb_CadastroPermissao.SelectedIndex
+                    };
 
-                    user.UsuarioNome = txt_CadastroUsuario.Text;
-                    user.Senha = txt_CadastroSenha.Text;
-                    user.Imagem = imagem;
-                    user.NivelPermissao = cmb_CadastroPermissao.SelectedIndex;
-
-                    UserData userData = new UserData(user, _context);
-                    userData.UpdateUser();
+                    UserData userData = new UserData(usuario, _context);
+                    userData.SaveUser();
                 }
+                GlobalConfiguration.ShowNewForm(new Frm_CadastroUsuario(), panel_Cadastro);
             }
-            else
-            {
-                Usuario usuario = new Usuario
-                {
-                    UsuarioNome = txt_CadastroUsuario.Text,
-                    Senha = txt_CadastroSenha.Text,
-                    Imagem = imagem,
-                    NivelPermissao = cmb_CadastroPermissao.SelectedIndex
-                };
-
-                UserData userData = new UserData(usuario, _context);
-                userData.SaveUser();
-            }
-            ShowNewForm(new Frm_CadastroUsuario());
+            else MessageBox.Show("Usuario/Senha invalido.", "Usuario/Senha", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
         private byte[] GetImagem(string caminho)
@@ -152,18 +157,6 @@ namespace GerenciadorDeAcervos.Forms
                     pictureBox_Cadastro.Image = new Bitmap(openFileDialog.FileName);
                 }
             }
-        }
-
-        private void ShowNewForm(object form)
-        {
-            if (this.panel_Cadastro.Controls.Count > 0) this.panel_Cadastro.Controls.RemoveAt(0);
-
-            Form newForm = form as Form;
-            newForm.TopLevel = false;
-            newForm.Dock = DockStyle.Fill;
-            this.panel_Cadastro.Controls.Add(newForm);
-            this.panel_Cadastro.Tag = newForm;
-            newForm.Show();
         }
 
         //Seleciona a linha do DGV e disponibiliza nos txtbox
@@ -227,7 +220,7 @@ namespace GerenciadorDeAcervos.Forms
 
         private void btn_CadastroUsuarioVoltar_Click(object sender, EventArgs e)
         {
-            ShowNewForm(new Frm_Opcoes());
+            GlobalConfiguration.ShowNewForm(new Frm_Opcoes(), panel_Cadastro);
         }
     }
 }
