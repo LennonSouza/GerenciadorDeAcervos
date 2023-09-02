@@ -1,8 +1,9 @@
-using GerenciadorDeAcervos.Data;
+using GerenciadorDeAcervos.Data.Models;
 using GerenciadorDeAcervos.Forms;
 using GerenciadorDeAcervos.Funcoes;
 using GerenciadorDeAcervos.Personalizacao;
 using System.Runtime.InteropServices;
+using static GerenciadorDeAcervos.Funcoes.GlobalConfiguration;
 
 namespace GerenciadorDeAcervos
 {
@@ -117,11 +118,7 @@ namespace GerenciadorDeAcervos
         }
         #endregion
 
-        private void btn_CadastroInstituicao_Click(object sender, EventArgs e)
-        {
-            GlobalConfiguration.ShowNewForm(new Frm_CadastroUsuario(), panel_Central);
-        }
-
+        // Botão de Login
         private void btn_Login_Click(object sender, EventArgs e)
         {
             btn_Login.Enabled = false;
@@ -130,26 +127,37 @@ namespace GerenciadorDeAcervos
             string senha = txtSenha.Text;
 
             GlobalConfiguration verificationCredentials = new GlobalConfiguration(nomeUsuario, senha);
-            verificationCredentials.Logged();
+            Usuario user = verificationCredentials.ConnectionUser();
+            if (user != null)
+            {
+                _principal.gb_InformacoesIntituicao.Visible = true;
+
+                Permissao permissao = (Permissao)user.NivelPermissao;
+
+                _principal.lbl_ExibicaoUsuario.Text = user.UsuarioNome;
+                _principal.lbl_ExibicaoPermissao.Text = permissao.ToString();
+                _principal.pictureBox_Usuario.Image = verificationCredentials.ConverterParaImagem(user.Imagem);
+
+                if (user.NivelPermissao == 0)
+                {
+                    ShowNewForm(new Frm_Opcoes(), _principal.panel_Central);
+                }
+                else if (user.NivelPermissao == 1)
+                {
+
+                }
+                else
+                {
+
+                }
+            }
+            else
+            {
+                _principal.lbl_ErrorLoginMsg.Text = "   Usuario/Senha invalido.";
+                _principal.lbl_ErrorLoginMsg.Visible = true;
+            }
 
             btn_Login.Enabled = true;
-        }
-
-        public enum Permissao
-        {
-            Master = 0,
-            Administrador = 1,
-            Usuario = 2,
-        }
-
-        public static Image ConverterParaImagem(byte[] byteArray)
-        {
-            using (MemoryStream ms = new MemoryStream(byteArray))
-            {
-                Image imagem = null;
-                if (byteArray.Length > 0) return Image.FromStream(ms);
-                else return imagem;
-            }
         }
     }
 }

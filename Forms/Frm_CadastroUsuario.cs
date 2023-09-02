@@ -9,31 +9,29 @@ namespace GerenciadorDeAcervos.Forms
 {
     public partial class Frm_CadastroUsuario : Form
     {
-        private readonly AcervoDbContext _context;
-        private string filePath;
-        private Guid guid = Guid.Empty;
+        SearchUsuarios searchUsuarios = new();
+        private string filePath = string.Empty;
+        private static Guid guid = Guid.Empty;
 
         public Frm_CadastroUsuario()
         {
             InitializeComponent();
-            _context = new AcervoDbContext();
         }
 
         private void Cadastro_Load(object sender, EventArgs e)
         {
             // Carregar dados de usuário no DataGridView
-            List<Usuario> usuarios = _context.Usuarios.ToList();
-            dataGridView_Usuarios.DataSource = usuarios;
+            dataGridView_Usuarios.DataSource = searchUsuarios.UsuarioToList();
 
             // Configurar coluna de imagem
-            DataGridViewImageColumn colunaImagem = new DataGridViewImageColumn();
+            DataGridViewImageColumn colunaImagem = new();
             colunaImagem.HeaderText = "Imagem";
             colunaImagem.DataPropertyName = "Imagem"; // Nome da propriedade na classe de dados
-            colunaImagem.ImageLayout = DataGridViewImageCellLayout.Zoom; // Escolha o layout da imagem (Zoom, Normal, etc.)
+            colunaImagem.ImageLayout = DataGridViewImageCellLayout.Zoom; // Escolha o layout da imagem
             dataGridView_Usuarios.Columns.Add(colunaImagem);
 
             // Adicionar coluna de botão de exclusão
-            DataGridViewButtonColumn column = new DataGridViewButtonColumn();
+            DataGridViewButtonColumn column = new();
             column.Name = "Excluir";
             column.HeaderText = "";
             column.Text = "Excluir";
@@ -44,104 +42,40 @@ namespace GerenciadorDeAcervos.Forms
             dataGridView_Usuarios.Columns[4].Visible = false;
 
             // Definir valores iniciais com base em Frm_Principal
-            Frm_Principal._principal.Invoke((MethodInvoker)delegate
+            _principal.Invoke((MethodInvoker)delegate
             {
-                txt_CadastroUsuario.Text = Frm_Principal._principal.lbl_ExibicaoUsuario.Text;
-                cmb_CadastroPermissao.SelectedItem = Frm_Principal._principal.lbl_ExibicaoPermissao.Text;
+                txt_CadastroUsuario.Text = _principal.lbl_ExibicaoUsuario.Text;
+                cmb_CadastroPermissao.SelectedItem = _principal.lbl_ExibicaoPermissao.Text;
             });
 
             // Centralizar grupo em painel
             Personalisar.CenterGroupBoxInPanel(panel_CadastroTop, gb_Cadastro);
 
+            string usuarioName = txt_CadastroUsuario.Text;
+
             // Obter o ID do usuário com base no nome do usuário
-            Usuario? user = _context.Usuarios.FirstOrDefault(u => u.UsuarioNome == txt_CadastroUsuario.Text);
+            Usuario? user = searchUsuarios.GetUsuario(usuarioName);
             if (user != null)
-            {
                 guid = user.UsuarioId;
-            }
         }
 
-        private void panel_Cadastro_Resize(object sender, EventArgs e)
-        {
-            Personalisar.CenterGroupBoxInPanel(panel_CadastroTop, gb_Cadastro);
-        }
-
+        #region Botões Form
         private void btn_CadastroSalvar_Click(object sender, EventArgs e)
         {
-            byte[] imagem = new byte[0];
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                MessageBox.Show("A imagem é obrigatoria.", "Adicionar imagem", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                GlobalConfiguration.ShowNewForm(new Frm_CadastroUsuario(), panel_Cadastro);
-                return;
-            }
-            else imagem = GetImagem(filePath);
+            string nomeUsuario = txt_CadastroUsuario.Text.ToLower();
+            string senha = txt_CadastroSenha.Text;
 
-            if (!string.IsNullOrWhiteSpace(txt_CadastroUsuario.Text) && !string.IsNullOrWhiteSpace(txt_CadastroSenha.Text))
-            {
-                Usuario? user = _context.Usuarios.FirstOrDefault(u => u.UsuarioNome == txt_CadastroUsuario.Text);
-                if (user != null)
-                {
-                    if (user.NivelPermissao != cmb_CadastroPermissao.SelectedIndex)
-                    {
-                        MessageBox.Show($"Você não pode alterar seu nivel de permissão.");
-                    }
-                    else
-                    {
-                        if (guid == user.UsuarioId)
-                        {
-                            _principal.Invoke((MethodInvoker)delegate
-                            {
-                                if (!string.IsNullOrEmpty(txt_CadastroUsuario.Text) &&
-                                !string.IsNullOrEmpty(txt_CadastroSenha.Text) &&
-                                !string.IsNullOrEmpty(cmb_CadastroPermissao.Text) &&
-                                pictureBox_Cadastro.Image != null)
-                                {
-                                    _principal.lbl_ExibicaoUsuario.Text = txt_CadastroUsuario.Text;
-                                    _principal.lbl_ExibicaoPermissao.Text = cmb_CadastroPermissao.SelectedItem.ToString();
-                                    _principal.pictureBox_Usuario.Image = pictureBox_Cadastro.Image;
-                                }
-                            });
-                        }
+            GlobalConfiguration verificationCredentials = new(nomeUsuario, senha);
 
-                        user.UsuarioNome = txt_CadastroUsuario.Text;
-                        user.Senha = txt_CadastroSenha.Text;
-                        user.Imagem = imagem;
-                        user.NivelPermissao = cmb_CadastroPermissao.SelectedIndex;
+            byte[] imagem = verificationCredentials.GetImagem(filePath);
 
-                        UserData userData = new UserData(user, _context);
-                        userData.UpdateUser();
-                    }
-                }
-                else
-                {
-                    Usuario usuario = new Usuario
-                    {
-                        UsuarioNome = txt_CadastroUsuario.Text,
-                        Senha = txt_CadastroSenha.Text,
-                        Imagem = imagem,
-                        NivelPermissao = cmb_CadastroPermissao.SelectedIndex
-                    };
+            Usuario userName = searchUsuarios.GetUsuario(nomeUsuario);
+            if (userName == null)
+                CriarNovoUsuario(nomeUsuario, senha, imagem);
+            else
+                AtualizarUsuarioExistente(nomeUsuario, senha, imagem, userName);
 
-                    UserData userData = new UserData(usuario, _context);
-                    userData.SaveUser();
-                }
-                GlobalConfiguration.ShowNewForm(new Frm_CadastroUsuario(), panel_Cadastro);
-            }
-            else MessageBox.Show("Usuario/Senha invalido.", "Usuario/Senha", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        }
-
-        private byte[] GetImagem(string caminho)
-        {
-            byte[] imagem;
-            using (FileStream stream = new(caminho, FileMode.Open, FileAccess.Read))
-            {
-                using (BinaryReader reader = new(stream))
-                {
-                    imagem = reader.ReadBytes((int)stream.Length);
-                }
-            }
-            return imagem;
+            GlobalConfiguration.ShowNewForm(new Frm_CadastroUsuario(), panel_Cadastro);
         }
 
         private void btn_CadastroCarregarImagem_Click(object sender, EventArgs e)
@@ -159,6 +93,64 @@ namespace GerenciadorDeAcervos.Forms
             }
         }
 
+        private void btn_CadastroUsuarioVoltar_Click(object sender, EventArgs e)
+        {
+            GlobalConfiguration.ShowNewForm(new Frm_Opcoes(), panel_Cadastro);
+        }
+        #endregion
+
+        #region Metodos CadastrarSalvar
+        private void CriarNovoUsuario(string nomeUsuario, string senha, byte[] imagem)
+        {
+            Usuario usuario = new Usuario
+            {
+                UsuarioNome = nomeUsuario,
+                Senha = senha,
+                Imagem = imagem,
+                NivelPermissao = cmb_CadastroPermissao.SelectedIndex
+            };
+
+            UserData userData = new UserData(usuario);
+            userData.SaveUser();
+        }
+
+        private void AtualizarUsuarioExistente(string nomeUsuario, string senha, byte[] imagem, Usuario userName)
+        {
+            Usuario user = GlobalConfiguration.GetUserID(userName.UsuarioId);
+
+            if (user.NivelPermissao == cmb_CadastroPermissao.SelectedIndex)
+            {
+                if (guid == user.UsuarioId)
+                {
+                    _principal.Invoke((MethodInvoker)delegate
+                    {
+                        _principal.lbl_ExibicaoUsuario.Text = txt_CadastroUsuario.Text;
+                        _principal.lbl_ExibicaoPermissao.Text = cmb_CadastroPermissao.SelectedItem.ToString();
+                        _principal.pictureBox_Usuario.Image = pictureBox_Cadastro.Image;
+                    });
+                }
+
+                user.UsuarioNome = nomeUsuario;
+                user.Senha = senha;
+                user.Imagem = imagem;
+                user.NivelPermissao = cmb_CadastroPermissao.SelectedIndex;
+
+                UserData userData = new UserData(user);
+                userData.UpdateUser();
+            }
+            else
+            {
+                MessageBox.Show("Você não pode alterar o nível de permissão.");
+            }
+        }
+        #endregion
+
+        #region Resize
+        private void panel_Cadastro_Resize(object sender, EventArgs e)
+        {
+            Personalisar.CenterGroupBoxInPanel(panel_CadastroTop, gb_Cadastro);
+        }
+
         //Seleciona a linha do DGV e disponibiliza nos txtbox
         private void dataGridView_Usuarios_SelectionChanged(object sender, EventArgs e)
         {
@@ -170,7 +162,7 @@ namespace GerenciadorDeAcervos.Forms
                 // Obtenha os valores das colunas da linha selecionada
                 string? nome = selectedRow.Cells["UsuarioNome"].Value.ToString();
                 string? senha = selectedRow.Cells["Senha"].Value.ToString();
-                Permissao permissao = (Permissao)selectedRow.Cells["NivelPermissao"].Value;
+                GlobalConfiguration.Permissao permissao = (GlobalConfiguration.Permissao)selectedRow.Cells["NivelPermissao"].Value;
 
                 // Exiba os valores nos TextBoxes
                 txt_CadastroUsuario.Text = nome;
@@ -192,13 +184,13 @@ namespace GerenciadorDeAcervos.Forms
 
                 if (result == DialogResult.Yes)
                 {
-                    Usuario? usuarioParaExcluir = _context.Usuarios.FirstOrDefault(u => u.UsuarioNome == value);
-                    List<Usuario> usuariosMaster = _context.Usuarios.Where(u => u.NivelPermissao == 0).ToList();
+                    Usuario? usuarioParaExcluir = searchUsuarios.GetUsuario(value);
+                    List<Usuario> usuariosMaster = searchUsuarios.GetUsuarioPermission();
                     if (usuarioParaExcluir != null)
                     {
                         if (usuarioParaExcluir.NivelPermissao != 0 || usuariosMaster.Count > 1)
                         {
-                            UserData userData = new UserData(usuarioParaExcluir, _context);
+                            UserData userData = new UserData(usuarioParaExcluir);
                             userData.DeleteUser();
 
                             // Exclui a linha correspondente ao botão de exclusão clicado
@@ -218,9 +210,6 @@ namespace GerenciadorDeAcervos.Forms
             }
         }
 
-        private void btn_CadastroUsuarioVoltar_Click(object sender, EventArgs e)
-        {
-            GlobalConfiguration.ShowNewForm(new Frm_Opcoes(), panel_Cadastro);
-        }
+        #endregion
     }
 }

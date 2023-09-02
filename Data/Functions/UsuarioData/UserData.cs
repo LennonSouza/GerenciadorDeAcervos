@@ -7,10 +7,10 @@ namespace GerenciadorDeAcervos.Data.Functions.UsuarioData
         private Usuario _usuario;
         private AcervoDbContext _context;
 
-        public UserData(Usuario usuario, AcervoDbContext context)
+        public UserData(Usuario usuario)
         {
             _usuario = usuario;
-            _context = context;
+            _context = new AcervoDbContext();
         }
 
         internal void SaveUser()

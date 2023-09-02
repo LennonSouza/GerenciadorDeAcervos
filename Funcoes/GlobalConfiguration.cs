@@ -1,5 +1,6 @@
 ﻿using GerenciadorDeAcervos.Data;
-using GerenciadorDeAcervos.Forms;
+using GerenciadorDeAcervos.Data.Models;
+using System.Drawing.Imaging;
 using System.Net.NetworkInformation;
 using static GerenciadorDeAcervos.Frm_Principal;
 
@@ -14,7 +15,8 @@ namespace GerenciadorDeAcervos.Funcoes
             _password = password;
         }
 
-        internal void Logged()
+        // Efetua a verificação das credenciais no aplicativo
+        internal Usuario ConnectionUser()
         {
             bool login = CredentialNotIsBlank();
             if (login)
@@ -22,39 +24,7 @@ namespace GerenciadorDeAcervos.Funcoes
                 bool connection = ConnectionIsTrue();
                 if (connection)
                 {
-                    using (AcervoDbContext context = new())
-                    {
-                        // Consulta o banco de dados para verificar se o usuário e senha correspondem.
-                        var user = context.Usuarios.FirstOrDefault(u => u.UsuarioNome == _login && u.Senha == _password);
-                        if (user != null)
-                        {
-                            _principal.gb_InformacoesIntituicao.Visible = true;
-
-                            Permissao permissao = (Permissao)user.NivelPermissao;
-
-                            _principal.lbl_ExibicaoUsuario.Text = user.UsuarioNome;
-                            _principal.lbl_ExibicaoPermissao.Text = permissao.ToString();
-                            _principal.pictureBox_Usuario.Image = ConverterParaImagem(user.Imagem);
-
-                            if (user.NivelPermissao == 0)
-                            {
-                                ShowNewForm(new Frm_Opcoes(), _principal.panel_Central);
-                            }
-                            else if (user.NivelPermissao == 1)
-                            {
-
-                            }
-                            else
-                            {
-
-                            }
-                        }
-                        else
-                        {
-                            _principal.lbl_ErrorLoginMsg.Text = "   Usuario/Senha invalido.";
-                            _principal.lbl_ErrorLoginMsg.Visible = true;
-                        }
-                    }
+                    return GetUser();
                 }
                 else
                 {
@@ -67,21 +37,45 @@ namespace GerenciadorDeAcervos.Funcoes
                 _principal.lbl_ErrorLoginMsg.Text = "   Login em Branco";
                 _principal.lbl_ErrorLoginMsg.Visible = true;
             }
+            return null;
         }
 
-        private static bool CredentialNotIsBlank()
+        // Busca o Usuario 
+        private static Usuario GetUser()
+        {
+            using (AcervoDbContext context = new())
+            {
+                // Consulta o banco de dados para verificar se o usuário e senha correspondem.
+                return context.Usuarios.FirstOrDefault(u => u.UsuarioNome == _login && u.Senha == _password);
+            }
+        }
+
+        // Busca pelo Guid ID
+        public static Usuario GetUserID(Guid id)
+        {
+            using (AcervoDbContext context = new())
+            {
+                // Consulta o banco de dados para verificar se o usuário e senha correspondem.
+                return context.Usuarios.FirstOrDefault(u => u.UsuarioId == id);
+            }
+        }
+
+        // Verifica se os campos login e senha não estão em branco
+        internal static bool CredentialNotIsBlank()
         {
             return !string.IsNullOrWhiteSpace(_login) && !string.IsNullOrWhiteSpace(_password) ? true : false;
         }
 
+        // Verifica se há uma conexão com a internet
         private static bool ConnectionIsTrue()
         {
             return NetworkInterface.GetIsNetworkAvailable() ? true : false;
         }
 
+        // Remove o Form atual do Panel, e adiciona um novo
         public static void ShowNewForm(object form, Panel panel)
         {
-            if (panel.Controls.Count > 0) 
+            if (panel.Controls.Count > 0)
                 panel.Controls.RemoveAt(0);
 
             Form newForm = (Form)form;
@@ -94,5 +88,73 @@ namespace GerenciadorDeAcervos.Funcoes
 
             newForm.Show();
         }
+
+        public enum Permissao
+        {
+            Master = 0,
+            Administrador = 1,
+            Usuario = 2,
+        }
+
+        #region Tratamento de Imagem
+        // Converte a de byte[] para imagem
+        public Image ConverterParaImagem(byte[] byteArray)
+        {
+            using (MemoryStream ms = new MemoryStream(byteArray))
+            {
+                if (byteArray.Length > 0)
+                    return Image.FromStream(ms);
+                else
+                    return ImagemVazia();
+            }
+        }
+
+        // Convert a Imagem para byte[]
+        public byte[] GetImagem(string caminho)
+        {
+            byte[] imagem;
+            if (string.IsNullOrWhiteSpace(caminho))
+            {
+                // Primeiro, crie uma imagem vazia
+                Image imagemVazia = ImagemVazia();
+
+                // Em seguida, converta a imagem em um formato de byte array
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    imagemVazia.Save(stream, ImageFormat.Png); // Você pode escolher um formato adequado aqui
+                    imagem = stream.ToArray();
+                }
+            }
+            else
+            {
+                using (FileStream stream = new(caminho, FileMode.Open, FileAccess.Read))
+                {
+                    using (BinaryReader reader = new(stream))
+                    {
+                        imagem = reader.ReadBytes((int)stream.Length);
+                    }
+                }
+            }
+
+            return imagem;
+        }
+
+        // Retorna uma imagem em branco
+        public static Image ImagemVazia()
+        {
+            int largura = 100; // Largura da imagem em pixels
+            int altura = 100;  // Altura da imagem em pixels
+
+            Bitmap imagemVazia = new Bitmap(largura, altura);
+
+            using (Graphics g = Graphics.FromImage(imagemVazia))
+            {
+                // Preencha a imagem com uma cor branca
+                g.FillRectangle(Brushes.White, 0, 0, largura, altura);
+            }
+
+            return imagemVazia;
+        }
+        #endregion
     }
 }
