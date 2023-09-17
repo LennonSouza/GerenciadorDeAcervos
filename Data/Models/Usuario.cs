@@ -2,14 +2,20 @@
 
 namespace GerenciadorDeAcervos.Data.Models
 {
-    public class Usuario
+    public class Usuario : Permissao
     {
-        [Key]
         public Guid UsuarioId { get; set; }
 
         public string UsuarioNome { get; set; } = string.Empty;
         public string Senha { get; set; } = string.Empty;
-        public int NivelPermissao { get; set; }
         public byte[] Imagem { get; set; } = new byte[0];
+
+        // Adicione uma propriedade de navegação para Permissao
+        public Permissao Permissao { get; set; }
+
+        public Usuario()
+        {
+            Permissao = new();
+        }
     }
 }

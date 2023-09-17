@@ -89,7 +89,7 @@ namespace GerenciadorDeAcervos.Funcoes
             newForm.Show();
         }
 
-        public enum Permissao
+        public enum enumPermissao
         {
             Master = 0,
             Administrador = 1,

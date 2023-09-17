@@ -132,7 +132,7 @@ namespace GerenciadorDeAcervos
             {
                 _principal.gb_InformacoesIntituicao.Visible = true;
 
-                Permissao permissao = (Permissao)user.NivelPermissao;
+                enumPermissao permissao = (enumPermissao)user.NivelPermissao;
 
                 _principal.lbl_ExibicaoUsuario.Text = user.UsuarioNome;
                 _principal.lbl_ExibicaoPermissao.Text = permissao.ToString();

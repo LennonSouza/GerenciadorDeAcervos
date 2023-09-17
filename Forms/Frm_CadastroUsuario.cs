@@ -162,7 +162,7 @@ namespace GerenciadorDeAcervos.Forms
                 // Obtenha os valores das colunas da linha selecionada
                 string? nome = selectedRow.Cells["UsuarioNome"].Value.ToString();
                 string? senha = selectedRow.Cells["Senha"].Value.ToString();
-                GlobalConfiguration.Permissao permissao = (GlobalConfiguration.Permissao)selectedRow.Cells["NivelPermissao"].Value;
+                GlobalConfiguration.enumPermissao permissao = (GlobalConfiguration.enumPermissao)selectedRow.Cells["NivelPermissao"].Value;
 
                 // Exiba os valores nos TextBoxes
                 txt_CadastroUsuario.Text = nome;
