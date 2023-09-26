@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace GerenciadorDeAcervos.Data.Models
+﻿namespace GerenciadorDeAcervos.Data.Models
 {
     public class Objeto
     {
@@ -8,13 +6,6 @@ namespace GerenciadorDeAcervos.Data.Models
         public string Nome { get; set; }
 
         public int ColecaoId { get; set; }
-
-        [ForeignKey("ColecaoId")]
         public Colecao Colecao { get; set; }
-
-        public Objeto()
-        {
-            Colecao = new();
-        }
     }
 }

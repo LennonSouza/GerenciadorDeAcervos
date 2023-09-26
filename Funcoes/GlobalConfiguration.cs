@@ -9,6 +9,7 @@ namespace GerenciadorDeAcervos.Funcoes
     public class GlobalConfiguration
     {
         private static string _login = string.Empty, _password = string.Empty;
+
         public GlobalConfiguration(string login, string password)
         {
             _login = login;
@@ -73,12 +74,15 @@ namespace GerenciadorDeAcervos.Funcoes
         }
 
         // Remove o Form atual do Panel, e adiciona um novo
-        public static void ShowNewForm(object form, Panel panel)
+        public static void ShowNewForm(Type formType, Panel panel)
         {
-            if (panel.Controls.Count > 0)
-                panel.Controls.RemoveAt(0);
+            // Remove qualquer controle existente no panel
+            foreach (Control control in panel.Controls)
+            {
+                control.Dispose(); // Libera os recursos do controle
+            }
 
-            Form newForm = (Form)form;
+            Form newForm = (Form)Activator.CreateInstance(formType);
 
             newForm.TopLevel = false;
             newForm.Dock = DockStyle.Fill;
@@ -87,7 +91,7 @@ namespace GerenciadorDeAcervos.Funcoes
             panel.Tag = newForm;
 
             newForm.Show();
-        }
+        } 
 
         public enum enumPermissao
         {

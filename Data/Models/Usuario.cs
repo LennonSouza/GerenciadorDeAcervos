@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace GerenciadorDeAcervos.Data.Models
+﻿namespace GerenciadorDeAcervos.Data.Models
 {
     public class Usuario : Permissao
     {
@@ -10,12 +8,6 @@ namespace GerenciadorDeAcervos.Data.Models
         public string Senha { get; set; } = string.Empty;
         public byte[] Imagem { get; set; } = new byte[0];
 
-        // Adicione uma propriedade de navegação para Permissao
         public Permissao Permissao { get; set; }
-
-        public Usuario()
-        {
-            Permissao = new();
-        }
     }
 }

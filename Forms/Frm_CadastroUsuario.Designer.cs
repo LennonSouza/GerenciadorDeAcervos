@@ -28,13 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            gb_CadastroPanel = new GroupBox();
-            panel_DataGridViewUsuarios = new Panel();
-            dataGridView_Usuarios = new DataGridView();
-            panel_CadastroTop = new Panel();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Frm_CadastroUsuario));
+            panel_CadastroUsuarioForm = new Panel();
             gb_Cadastro = new GroupBox();
-            btn_CadastroUsuarioVoltar = new Button();
-            pictureBox_Cadastro = new PictureBox();
+            pb_CadastroUsuarioImagem = new PictureBox();
             cmb_CadastroPermissao = new ComboBox();
             lbl_CadastroNivelPermissao = new Label();
             txt_CadastroSenha = new TextBox();
@@ -43,65 +40,37 @@
             lbl_CadastroLogin = new Label();
             btn_CadastroSalvar = new Button();
             btn_CadastroCarregarImagem = new Button();
+            btn_CadastroUsuarioVoltar = new PictureBox();
+            btn_CadastroUsuarioPesquisar = new PictureBox();
+            btn_CadastroUsuarioInserir = new PictureBox();
             panel_Cadastro = new Panel();
-            gb_CadastroPanel.SuspendLayout();
-            panel_DataGridViewUsuarios.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView_Usuarios).BeginInit();
-            panel_CadastroTop.SuspendLayout();
+            panel_CadastrousuarioBotoes = new Panel();
+            btn_CadastroUsuario = new PictureBox();
+            btn_CadastroUsuarioExcluir = new PictureBox();
+            panel_CadastroUsuarioForm.SuspendLayout();
             gb_Cadastro.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox_Cadastro).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pb_CadastroUsuarioImagem).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)btn_CadastroUsuarioVoltar).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)btn_CadastroUsuarioPesquisar).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)btn_CadastroUsuarioInserir).BeginInit();
             panel_Cadastro.SuspendLayout();
+            panel_CadastrousuarioBotoes.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)btn_CadastroUsuario).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)btn_CadastroUsuarioExcluir).BeginInit();
             SuspendLayout();
             // 
-            // gb_CadastroPanel
+            // panel_CadastroUsuarioForm
             // 
-            gb_CadastroPanel.Controls.Add(panel_DataGridViewUsuarios);
-            gb_CadastroPanel.Controls.Add(panel_CadastroTop);
-            gb_CadastroPanel.Dock = DockStyle.Fill;
-            gb_CadastroPanel.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
-            gb_CadastroPanel.Location = new Point(0, 0);
-            gb_CadastroPanel.Name = "gb_CadastroPanel";
-            gb_CadastroPanel.Size = new Size(655, 394);
-            gb_CadastroPanel.TabIndex = 0;
-            gb_CadastroPanel.TabStop = false;
-            gb_CadastroPanel.Text = "Cadastro Usuario";
-            // 
-            // panel_DataGridViewUsuarios
-            // 
-            panel_DataGridViewUsuarios.Controls.Add(dataGridView_Usuarios);
-            panel_DataGridViewUsuarios.Dock = DockStyle.Fill;
-            panel_DataGridViewUsuarios.Location = new Point(3, 176);
-            panel_DataGridViewUsuarios.Name = "panel_DataGridViewUsuarios";
-            panel_DataGridViewUsuarios.Size = new Size(649, 215);
-            panel_DataGridViewUsuarios.TabIndex = 14;
-            // 
-            // dataGridView_Usuarios
-            // 
-            dataGridView_Usuarios.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView_Usuarios.Cursor = Cursors.Hand;
-            dataGridView_Usuarios.Dock = DockStyle.Fill;
-            dataGridView_Usuarios.Location = new Point(0, 0);
-            dataGridView_Usuarios.Name = "dataGridView_Usuarios";
-            dataGridView_Usuarios.ReadOnly = true;
-            dataGridView_Usuarios.RowTemplate.Height = 25;
-            dataGridView_Usuarios.Size = new Size(649, 215);
-            dataGridView_Usuarios.TabIndex = 11;
-            dataGridView_Usuarios.CellContentClick += dataGridView_Usuarios_CellContentClick;
-            dataGridView_Usuarios.SelectionChanged += dataGridView_Usuarios_SelectionChanged;
-            // 
-            // panel_CadastroTop
-            // 
-            panel_CadastroTop.Controls.Add(gb_Cadastro);
-            panel_CadastroTop.Dock = DockStyle.Top;
-            panel_CadastroTop.Location = new Point(3, 21);
-            panel_CadastroTop.Name = "panel_CadastroTop";
-            panel_CadastroTop.Size = new Size(649, 155);
-            panel_CadastroTop.TabIndex = 13;
+            panel_CadastroUsuarioForm.Controls.Add(gb_Cadastro);
+            panel_CadastroUsuarioForm.Dock = DockStyle.Top;
+            panel_CadastroUsuarioForm.Location = new Point(0, 0);
+            panel_CadastroUsuarioForm.Name = "panel_CadastroUsuarioForm";
+            panel_CadastroUsuarioForm.Size = new Size(327, 130);
+            panel_CadastroUsuarioForm.TabIndex = 14;
             // 
             // gb_Cadastro
             // 
-            gb_Cadastro.Controls.Add(btn_CadastroUsuarioVoltar);
-            gb_Cadastro.Controls.Add(pictureBox_Cadastro);
+            gb_Cadastro.Controls.Add(pb_CadastroUsuarioImagem);
             gb_Cadastro.Controls.Add(cmb_CadastroPermissao);
             gb_Cadastro.Controls.Add(lbl_CadastroNivelPermissao);
             gb_Cadastro.Controls.Add(txt_CadastroSenha);
@@ -110,89 +79,77 @@
             gb_Cadastro.Controls.Add(lbl_CadastroLogin);
             gb_Cadastro.Controls.Add(btn_CadastroSalvar);
             gb_Cadastro.Controls.Add(btn_CadastroCarregarImagem);
-            gb_Cadastro.Location = new Point(122, 3);
+            gb_Cadastro.Location = new Point(3, 3);
             gb_Cadastro.Name = "gb_Cadastro";
-            gb_Cadastro.Size = new Size(335, 152);
+            gb_Cadastro.Size = new Size(321, 121);
             gb_Cadastro.TabIndex = 10;
             gb_Cadastro.TabStop = false;
             // 
-            // btn_CadastroUsuarioVoltar
+            // pb_CadastroUsuarioImagem
             // 
-            btn_CadastroUsuarioVoltar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btn_CadastroUsuarioVoltar.Cursor = Cursors.Hand;
-            btn_CadastroUsuarioVoltar.Location = new Point(268, 113);
-            btn_CadastroUsuarioVoltar.Name = "btn_CadastroUsuarioVoltar";
-            btn_CadastroUsuarioVoltar.Size = new Size(55, 30);
-            btn_CadastroUsuarioVoltar.TabIndex = 19;
-            btn_CadastroUsuarioVoltar.Text = "Voltar";
-            btn_CadastroUsuarioVoltar.UseVisualStyleBackColor = true;
-            btn_CadastroUsuarioVoltar.Click += btn_CadastroUsuarioVoltar_Click;
-            // 
-            // pictureBox_Cadastro
-            // 
-            pictureBox_Cadastro.Location = new Point(21, 27);
-            pictureBox_Cadastro.Name = "pictureBox_Cadastro";
-            pictureBox_Cadastro.Size = new Size(100, 80);
-            pictureBox_Cadastro.TabIndex = 11;
-            pictureBox_Cadastro.TabStop = false;
+            pb_CadastroUsuarioImagem.Location = new Point(6, 1);
+            pb_CadastroUsuarioImagem.Name = "pb_CadastroUsuarioImagem";
+            pb_CadastroUsuarioImagem.Size = new Size(100, 80);
+            pb_CadastroUsuarioImagem.TabIndex = 11;
+            pb_CadastroUsuarioImagem.TabStop = false;
             // 
             // cmb_CadastroPermissao
             // 
             cmb_CadastroPermissao.FormattingEnabled = true;
             cmb_CadastroPermissao.Items.AddRange(new object[] { "Master", "Administrador", "Usuario" });
-            cmb_CadastroPermissao.Location = new Point(206, 82);
+            cmb_CadastroPermissao.Location = new Point(197, 59);
             cmb_CadastroPermissao.Name = "cmb_CadastroPermissao";
-            cmb_CadastroPermissao.Size = new Size(118, 25);
+            cmb_CadastroPermissao.Size = new Size(118, 23);
             cmb_CadastroPermissao.TabIndex = 18;
             // 
             // lbl_CadastroNivelPermissao
             // 
             lbl_CadastroNivelPermissao.AutoSize = true;
-            lbl_CadastroNivelPermissao.Location = new Point(127, 85);
+            lbl_CadastroNivelPermissao.Location = new Point(118, 62);
             lbl_CadastroNivelPermissao.Name = "lbl_CadastroNivelPermissao";
-            lbl_CadastroNivelPermissao.Size = new Size(73, 19);
+            lbl_CadastroNivelPermissao.Size = new Size(64, 15);
             lbl_CadastroNivelPermissao.TabIndex = 17;
             lbl_CadastroNivelPermissao.Text = "Permissão:";
             // 
             // txt_CadastroSenha
             // 
-            txt_CadastroSenha.Location = new Point(206, 52);
+            txt_CadastroSenha.Location = new Point(197, 29);
             txt_CadastroSenha.Name = "txt_CadastroSenha";
             txt_CadastroSenha.PasswordChar = '*';
-            txt_CadastroSenha.Size = new Size(118, 25);
+            txt_CadastroSenha.Size = new Size(118, 23);
             txt_CadastroSenha.TabIndex = 16;
             // 
             // txt_CadastroUsuario
             // 
-            txt_CadastroUsuario.Location = new Point(206, 24);
+            txt_CadastroUsuario.Location = new Point(197, 1);
             txt_CadastroUsuario.Name = "txt_CadastroUsuario";
-            txt_CadastroUsuario.Size = new Size(118, 25);
+            txt_CadastroUsuario.Size = new Size(118, 23);
             txt_CadastroUsuario.TabIndex = 15;
             // 
             // lbl_CadastroSenha
             // 
             lbl_CadastroSenha.AutoSize = true;
-            lbl_CadastroSenha.Location = new Point(127, 56);
+            lbl_CadastroSenha.Location = new Point(118, 33);
             lbl_CadastroSenha.Name = "lbl_CadastroSenha";
-            lbl_CadastroSenha.Size = new Size(49, 19);
+            lbl_CadastroSenha.Size = new Size(42, 15);
             lbl_CadastroSenha.TabIndex = 14;
             lbl_CadastroSenha.Text = "Senha:";
             // 
             // lbl_CadastroLogin
             // 
             lbl_CadastroLogin.AutoSize = true;
-            lbl_CadastroLogin.Location = new Point(127, 27);
+            lbl_CadastroLogin.Location = new Point(118, 4);
             lbl_CadastroLogin.Name = "lbl_CadastroLogin";
-            lbl_CadastroLogin.Size = new Size(59, 19);
+            lbl_CadastroLogin.Size = new Size(50, 15);
             lbl_CadastroLogin.TabIndex = 13;
             lbl_CadastroLogin.Text = "Usuario:";
             // 
             // btn_CadastroSalvar
             // 
             btn_CadastroSalvar.Cursor = Cursors.Hand;
-            btn_CadastroSalvar.Location = new Point(206, 114);
+            btn_CadastroSalvar.Location = new Point(261, 88);
             btn_CadastroSalvar.Name = "btn_CadastroSalvar";
-            btn_CadastroSalvar.Size = new Size(56, 29);
+            btn_CadastroSalvar.Size = new Size(54, 29);
             btn_CadastroSalvar.TabIndex = 11;
             btn_CadastroSalvar.Text = "Salvar";
             btn_CadastroSalvar.UseVisualStyleBackColor = true;
@@ -201,62 +158,133 @@
             // btn_CadastroCarregarImagem
             // 
             btn_CadastroCarregarImagem.Cursor = Cursors.Hand;
-            btn_CadastroCarregarImagem.Location = new Point(21, 114);
+            btn_CadastroCarregarImagem.Location = new Point(6, 88);
             btn_CadastroCarregarImagem.Name = "btn_CadastroCarregarImagem";
-            btn_CadastroCarregarImagem.Size = new Size(179, 29);
+            btn_CadastroCarregarImagem.Size = new Size(134, 29);
             btn_CadastroCarregarImagem.TabIndex = 9;
             btn_CadastroCarregarImagem.Text = "Carregar Imagem";
             btn_CadastroCarregarImagem.UseVisualStyleBackColor = true;
             btn_CadastroCarregarImagem.Click += btn_CadastroCarregarImagem_Click;
             // 
+            // btn_CadastroUsuarioVoltar
+            // 
+            btn_CadastroUsuarioVoltar.Cursor = Cursors.Hand;
+            btn_CadastroUsuarioVoltar.Image = (Image)resources.GetObject("btn_CadastroUsuarioVoltar.Image");
+            btn_CadastroUsuarioVoltar.Location = new Point(3, 6);
+            btn_CadastroUsuarioVoltar.Name = "btn_CadastroUsuarioVoltar";
+            btn_CadastroUsuarioVoltar.Size = new Size(48, 48);
+            btn_CadastroUsuarioVoltar.SizeMode = PictureBoxSizeMode.Zoom;
+            btn_CadastroUsuarioVoltar.TabIndex = 2;
+            btn_CadastroUsuarioVoltar.TabStop = false;
+            btn_CadastroUsuarioVoltar.Click += btn_CadastroUsuarioVoltar_Click;
+            // 
+            // btn_CadastroUsuarioPesquisar
+            // 
+            btn_CadastroUsuarioPesquisar.Cursor = Cursors.Hand;
+            btn_CadastroUsuarioPesquisar.Image = (Image)resources.GetObject("btn_CadastroUsuarioPesquisar.Image");
+            btn_CadastroUsuarioPesquisar.Location = new Point(168, 6);
+            btn_CadastroUsuarioPesquisar.Name = "btn_CadastroUsuarioPesquisar";
+            btn_CadastroUsuarioPesquisar.Size = new Size(48, 48);
+            btn_CadastroUsuarioPesquisar.SizeMode = PictureBoxSizeMode.Zoom;
+            btn_CadastroUsuarioPesquisar.TabIndex = 1;
+            btn_CadastroUsuarioPesquisar.TabStop = false;
+            // 
+            // btn_CadastroUsuarioInserir
+            // 
+            btn_CadastroUsuarioInserir.Cursor = Cursors.Hand;
+            btn_CadastroUsuarioInserir.Image = (Image)resources.GetObject("btn_CadastroUsuarioInserir.Image");
+            btn_CadastroUsuarioInserir.Location = new Point(114, 6);
+            btn_CadastroUsuarioInserir.Name = "btn_CadastroUsuarioInserir";
+            btn_CadastroUsuarioInserir.Size = new Size(48, 48);
+            btn_CadastroUsuarioInserir.SizeMode = PictureBoxSizeMode.Zoom;
+            btn_CadastroUsuarioInserir.TabIndex = 0;
+            btn_CadastroUsuarioInserir.TabStop = false;
+            btn_CadastroUsuarioInserir.Click += btn_CadastroUsuarioInserir_Click;
+            // 
             // panel_Cadastro
             // 
-            panel_Cadastro.Controls.Add(gb_CadastroPanel);
+            panel_Cadastro.Controls.Add(panel_CadastrousuarioBotoes);
+            panel_Cadastro.Controls.Add(panel_CadastroUsuarioForm);
             panel_Cadastro.Dock = DockStyle.Fill;
             panel_Cadastro.Location = new Point(0, 0);
             panel_Cadastro.Name = "panel_Cadastro";
-            panel_Cadastro.Size = new Size(655, 394);
+            panel_Cadastro.Size = new Size(327, 236);
             panel_Cadastro.TabIndex = 1;
             panel_Cadastro.Resize += panel_Cadastro_Resize;
+            // 
+            // panel_CadastrousuarioBotoes
+            // 
+            panel_CadastrousuarioBotoes.Controls.Add(btn_CadastroUsuario);
+            panel_CadastrousuarioBotoes.Controls.Add(btn_CadastroUsuarioExcluir);
+            panel_CadastrousuarioBotoes.Controls.Add(btn_CadastroUsuarioInserir);
+            panel_CadastrousuarioBotoes.Controls.Add(btn_CadastroUsuarioPesquisar);
+            panel_CadastrousuarioBotoes.Controls.Add(btn_CadastroUsuarioVoltar);
+            panel_CadastrousuarioBotoes.Location = new Point(0, 130);
+            panel_CadastrousuarioBotoes.Name = "panel_CadastrousuarioBotoes";
+            panel_CadastrousuarioBotoes.Size = new Size(327, 94);
+            panel_CadastrousuarioBotoes.TabIndex = 15;
+            // 
+            // btn_CadastroUsuario
+            // 
+            btn_CadastroUsuario.Location = new Point(222, 6);
+            btn_CadastroUsuario.Name = "btn_CadastroUsuario";
+            btn_CadastroUsuario.Size = new Size(48, 48);
+            btn_CadastroUsuario.TabIndex = 4;
+            btn_CadastroUsuario.TabStop = false;
+            // 
+            // btn_CadastroUsuarioExcluir
+            // 
+            btn_CadastroUsuarioExcluir.Cursor = Cursors.Hand;
+            btn_CadastroUsuarioExcluir.Image = (Image)resources.GetObject("btn_CadastroUsuarioExcluir.Image");
+            btn_CadastroUsuarioExcluir.Location = new Point(276, 6);
+            btn_CadastroUsuarioExcluir.Name = "btn_CadastroUsuarioExcluir";
+            btn_CadastroUsuarioExcluir.Size = new Size(48, 48);
+            btn_CadastroUsuarioExcluir.SizeMode = PictureBoxSizeMode.Zoom;
+            btn_CadastroUsuarioExcluir.TabIndex = 3;
+            btn_CadastroUsuarioExcluir.TabStop = false;
             // 
             // Frm_CadastroUsuario
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(655, 394);
+            ClientSize = new Size(327, 236);
             Controls.Add(panel_Cadastro);
             FormBorderStyle = FormBorderStyle.None;
             Name = "Frm_CadastroUsuario";
             Text = "Cadastro";
             Load += Cadastro_Load;
-            gb_CadastroPanel.ResumeLayout(false);
-            panel_DataGridViewUsuarios.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dataGridView_Usuarios).EndInit();
-            panel_CadastroTop.ResumeLayout(false);
+            panel_CadastroUsuarioForm.ResumeLayout(false);
             gb_Cadastro.ResumeLayout(false);
             gb_Cadastro.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox_Cadastro).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pb_CadastroUsuarioImagem).EndInit();
+            ((System.ComponentModel.ISupportInitialize)btn_CadastroUsuarioVoltar).EndInit();
+            ((System.ComponentModel.ISupportInitialize)btn_CadastroUsuarioPesquisar).EndInit();
+            ((System.ComponentModel.ISupportInitialize)btn_CadastroUsuarioInserir).EndInit();
             panel_Cadastro.ResumeLayout(false);
+            panel_CadastrousuarioBotoes.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)btn_CadastroUsuario).EndInit();
+            ((System.ComponentModel.ISupportInitialize)btn_CadastroUsuarioExcluir).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
-
-        private GroupBox gb_CadastroPanel;
-        private Button btn_CadastroCarregarImagem;
-        private GroupBox gb_Cadastro;
         private Panel panel_Cadastro;
-        private Button btn_CadastroSalvar;
-        private TextBox txt_CadastroUsuario;
-        private Label lbl_CadastroSenha;
-        private Label lbl_CadastroLogin;
-        private ComboBox cmb_CadastroPermissao;
-        private Label lbl_CadastroNivelPermissao;
-        private TextBox txt_CadastroSenha;
-        private Panel panel_CadastroTop;
-        private Panel panel_DataGridViewUsuarios;
-        private DataGridView dataGridView_Usuarios;
-        public PictureBox pictureBox_Cadastro;
-        public Button btn_CadastroUsuarioVoltar;
+        public PictureBox pb_CadastroUsuarioImagem;
+        public PictureBox btn_CadastroUsuarioPesquisar;
+        public PictureBox btn_CadastroUsuarioInserir;
+        public PictureBox btn_CadastroUsuarioVoltar;
+        private Panel panel_CadastrousuarioBotoes;
+        private PictureBox btn_CadastroUsuario;
+        private PictureBox btn_CadastroUsuarioExcluir;
+        public GroupBox gb_Cadastro;
+        public Panel panel_CadastroUsuarioForm;
+        public Button btn_CadastroCarregarImagem;
+        public Button btn_CadastroSalvar;
+        public TextBox txt_CadastroUsuario;
+        public Label lbl_CadastroSenha;
+        public Label lbl_CadastroLogin;
+        public ComboBox cmb_CadastroPermissao;
+        public Label lbl_CadastroNivelPermissao;
+        public TextBox txt_CadastroSenha;
     }
 }

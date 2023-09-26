@@ -22,7 +22,6 @@ namespace GerenciadorDeAcervos.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Configurações das entidades
-            modelBuilder.Entity<Usuario>().ToTable("Usuarios").HasKey(e => e.UsuarioId);
             modelBuilder.Entity<Permissao>().HasKey(k => k.PermissaoId);
             modelBuilder.Entity<Instituicao>().HasKey(k => k.InstituicaoId);
             modelBuilder.Entity<Setor>().HasKey(k => k.SetorId);
@@ -32,7 +31,7 @@ namespace GerenciadorDeAcervos.Data
             // Configuração do tipo de dados para a propriedade Imagem
             modelBuilder.Entity<Usuario>().Property(e => e.Imagem).HasColumnType("varbinary(max)").HasDefaultValue(Array.Empty<byte>());
 
-            // Configuração do relacionamento entre Usuario e Permissao
+            // Configuração do relacionamento entre Usuario e Permissao 
             modelBuilder.Entity<Usuario>().HasOne(u => u.Permissao).WithMany().HasForeignKey(u => u.PermissaoId);
 
             // Configuração do relacionamento entre Objeto e Colecao

@@ -22,17 +22,17 @@ namespace GerenciadorDeAcervos.Forms
 
         private void btn_ColecaoAdicionar_Click(object sender, EventArgs e)
         {
-            GlobalConfiguration.ShowNewForm(new Frm_AdicionarColecao(), panel_ColecaoInsercaoInformacao);
+            GlobalConfiguration.ShowNewForm(typeof(Frm_AdicionarColecao), panel_ColecaoInsercaoInformacao);
         }
 
         private void btn_ColecaoPesquisar_Click(object sender, EventArgs e)
         {
-            GlobalConfiguration.ShowNewForm(new Frm_PesquisarColecao(), panel_ColecaoInsercaoInformacao);
+            GlobalConfiguration.ShowNewForm(typeof(Frm_PesquisarColecao), panel_ColecaoInsercaoInformacao);
         }
 
         private void btn_ColecaoVoltar_Click(object sender, EventArgs e)
         {
-            GlobalConfiguration.ShowNewForm(new Frm_Opcoes(), panel_Colecao);
+            GlobalConfiguration.ShowNewForm(typeof(Frm_Opcoes), panel_Colecao);
         }
     }
 }

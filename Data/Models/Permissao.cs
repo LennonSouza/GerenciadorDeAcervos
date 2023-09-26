@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace GerenciadorDeAcervos.Data.Models
+﻿namespace GerenciadorDeAcervos.Data.Models
 {
     public class Permissao
     {

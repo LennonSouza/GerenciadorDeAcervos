@@ -1,3 +1,4 @@
+using GerenciadorDeAcervos.Data.Functions.UsuarioData;
 using GerenciadorDeAcervos.Data.Models;
 using GerenciadorDeAcervos.Forms;
 using GerenciadorDeAcervos.Funcoes;
@@ -15,6 +16,15 @@ namespace GerenciadorDeAcervos
         {
             _principal = this;
             InitializeComponent();
+
+            // Caso não haja um usuario cadastrado, ele precisara adicionar o Master
+            SearchUsuarios searchUsuarios = new();
+            List<Usuario> userList = searchUsuarios.UsuarioToList();
+            if (userList.Count == 0)
+            {
+                ShowNewForm(typeof(Frm_CadastroUsuario), _principal.panel_Central);
+                MessageBox.Show("Adicione um usuario 'MASTER'", "Usuario Master", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -140,7 +150,7 @@ namespace GerenciadorDeAcervos
 
                 if (user.NivelPermissao == 0)
                 {
-                    ShowNewForm(new Frm_Opcoes(), _principal.panel_Central);
+                    ShowNewForm(typeof(Frm_Opcoes), _principal.panel_Central);
                 }
                 else if (user.NivelPermissao == 1)
                 {

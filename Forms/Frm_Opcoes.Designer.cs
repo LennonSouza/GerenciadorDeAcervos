@@ -117,12 +117,11 @@
         }
 
         #endregion
-
-        private Panel panel_Opcoes;
-        private GroupBox gb_Opcoes;
         private GroupBox gb_OpçoesMaster;
         private Button btn_Usuarios;
         private Button btn_Colecoes;
         private Button btn_Setores;
+        public GroupBox gb_Opcoes;
+        public Panel panel_Opcoes;
     }
 }
